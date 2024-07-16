@@ -11,9 +11,9 @@ const Game: React.FC = () => {
   const [selectedCells, setSelectedCells] = useState<[number, number][]>([]);
   const [foundWords, setFoundWords] = useState<string[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [foundWordsWithCells, setFoundWordsWithCells] = useState<{word: string, cells: [number, number][]}[]>([]);
+  const [, setFoundWordsWithCells] = useState<{word: string, cells: [number, number][]}[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [foundWordsColors, setFoundWordsColors] = useState<Record<string, string>>({});
+  const [, setFoundWordsColors] = useState<Record<string, string>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [points, setPoints] = useState(0);
   const [time, setTime] = useState(0);
