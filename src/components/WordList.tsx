@@ -7,7 +7,7 @@ interface WordListProps {
 
 const WordList: React.FC<WordListProps> = ({ words, foundWords }) => {
   return (
-    <div className="mt-4 flex space-x-3 flex-wrap max-w-80 justify-center">
+    <div className="mt-4 flex space-x-3 flex-wrap max-w-96 justify-center">
       {words.map((word, index) => (
         <div
           key={index}
