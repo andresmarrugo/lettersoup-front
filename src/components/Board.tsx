@@ -38,7 +38,7 @@ const Board: React.FC<BoardProps> = ({
           return (
             <div
               key={`${rowIndex}-${colIndex}`}
-              className={`w-8 h-8 flex items-center justify-center border 
+              className={`w-8 h-8 flex items-center justify-center border font-bold 
                 ${isSelected ? 'bg-blue-200' : 'bg-white'}`}
               style={cellColor ? { backgroundColor: cellColor } : {}}
               onMouseDown={() => onCellMouseDown(rowIndex, colIndex)}

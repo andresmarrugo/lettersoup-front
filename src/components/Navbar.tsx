@@ -14,12 +14,12 @@ const Navbar: React.FC = () => {
         </div>
         {isGamePage ? (
           <div>
-            <button className="mr-4 bg-blue-500 text-white px-4 py-2 rounded">
+            {/* <button className="mr-4 bg-blue-500 text-white px-4 py-2 rounded">
               Reiniciar
             </button>
             <button className="bg-red-500 text-white px-4 py-2 rounded">
               Salir
-            </button>
+            </button> */}
           </div>
         ) : null}
       </div>

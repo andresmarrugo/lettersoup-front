@@ -22,26 +22,25 @@ const Game: React.FC = () => {
   const [startCell, setStartCell] = useState<[number, number] | null>(null);
   const [cellColors, setCellColors] = useState<Record<string, string>>({});
 
-  useEffect(()=>{
-    const fetchData = async ()=>{
+  const fetchData = async () =>{
+    try {
       setLoading(true)
-      try {
-        const response  = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/random-words?minLength=4&maxLength=9&count=10`)
-        if(!response.ok){
-          throw new Error("Network response was wrong")
-        }
-        const data: Array<string> = await response.json()
-        const upperWords = data.map(word=> word.toUpperCase())
-        setWords(upperWords)
-        setLoading(false)
-        return data
-      } catch (error) {
-        setError(error)
-        console.log('error', error)
+      const response  = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/random-words?minLength=4&maxLength=9&count=10`)
+      if(!response.ok){
+        throw new Error("Network response was wrong")
       }
+      const data: Array<string> = await response.json()
+      const upperWords = data.map(word=> word.toUpperCase())
+      setWords(upperWords)
+      setLoading(false)
+      return data
+    } catch (error) {
+      setError(error)
     }
+  }
 
-    fetchData()
+  useEffect(()=>{
+      fetchData()
   },[])
 
   useEffect(() => {
@@ -82,26 +81,35 @@ const Game: React.FC = () => {
     // Shuffle words randomly
     words.sort(() => Math.random() - 0.5);
   
-    words.forEach(word => {
-      let placed = false;
-      let attempts = 0;
+    const remainingWords = [...words];
   
-      while (!placed && attempts < 500) {
-        attempts++;
-        const direction = directions[Math.floor(Math.random() * directions.length)];
-        const row = Math.floor(Math.random() * rows);
-        const col = Math.floor(Math.random() * cols);
+    while (remainingWords.length > 0) {
+      let wordIndex = 0;
   
-        if (canPlaceWord(board, word, row, col, direction)) {
-          placeWord(board, word, row, col, direction);
-          placed = true;
+      while (wordIndex < remainingWords.length) {
+        const word = remainingWords[wordIndex];
+        let placed = false;
+        let attempts = 0;
+  
+        while (!placed && attempts < 500) {
+          attempts++;
+          const direction = directions[Math.floor(Math.random() * directions.length)];
+          const row = Math.floor(Math.random() * rows);
+          const col = Math.floor(Math.random() * cols);
+  
+          if (canPlaceWord(board, word, row, col, direction)) {
+            placeWord(board, word, row, col, direction);
+            placed = true;
+            remainingWords.splice(wordIndex, 1); // Remove placed word from remaining list
+          }
+        }
+  
+        if (!placed) {
+          console.warn(`No se pudo colocar la palabra: ${word}`);
+          wordIndex++; // Try next word in next iteration
         }
       }
-  
-      if (!placed) {
-        console.warn(`No se pudo colocar la palabra: ${word}`);
-      }
-    });
+    }
   
     // Fill empty spaces strategically (modified)
     fillEmptySpaces(board, rows, cols);
@@ -301,14 +309,15 @@ const Game: React.FC = () => {
     handleMouseUp();
   };
 
-  const handleRestart = () => {
+  const handleRestart = async () => {
     setSelectedCells([]);
     setFoundWords([]);
     setFoundWordsWithCells([]);
     setFoundWordsColors({});
     setCellColors({});
     setPoints(0);
-    const newBoard = generateBoard(words, 10, 10);
+    const newWords= await fetchData() as Array<string>
+    const newBoard = generateBoard(newWords, 10, 10);
     setBoard(newBoard);
     setIsModalOpen(false);
     startTimer();
